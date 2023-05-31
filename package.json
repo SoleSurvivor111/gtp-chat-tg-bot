@@ -13,7 +13,7 @@
     "dev": "nodemon",
     "dev:debug": "nodemon --inspect src/main.ts",
     "start": "npm run build && node build/main",
-    "build": "rimraf ./build && npx tsc",
+    "build": "docker build -t botgpt .",
     "lint": "npx eslint ./src",
     "format": "npx eslint ./src --fix"
   },
