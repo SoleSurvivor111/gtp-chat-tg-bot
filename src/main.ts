@@ -31,49 +31,49 @@ bot.command("start", async (ctx) => {
 });
 
 bot.on("message", async (ctx) => {
-  console.log(ctx);
-  try {
-    //@ts-ignore
-    const text = ctx.message.text;
-    SESSION.messages.push({
-      role: openai.roles.USER,
-      content: text as string,
-    });
+  if (ctx.update.message.hasOwnProperty("voice")) {
+    try {
+      //@ts-ignore
+      const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
+      const userId = String(ctx.message.from.id);
+      const oggPath = await ogg.create(link.href, userId);
+      const mp3Path = await ogg.toMp3(oggPath as string, userId);
 
-    await ctx.reply(code(`Запрос обрабатывается...`));
+      const text = await openai.transcription(mp3Path as string);
+      await ctx.reply(code(`Ваш запрос: ${text}`));
+      await ctx.reply;
 
-    const response = await openai.chat(SESSION.messages);
-
-    await ctx.reply(response?.content || "Вопрос не понятен");
-  } catch (e) {
-    console.log(`Error while message: `, e);
-  }
-});
-
-bot.on(message("voice"), async (ctx) => {
-  try {
-    const link = await ctx.telegram.getFileLink(ctx.message.voice.file_id);
-    const userId = String(ctx.message.from.id);
-    const oggPath = await ogg.create(link.href, userId);
-    const mp3Path = await ogg.toMp3(oggPath as string, userId);
-
-    const text = await openai.transcription(mp3Path as string);
-    await ctx.reply(code(`Ваш запрос: ${text}`));
-    await ctx.reply;
-
-    SESSION.messages.push({
-      role: openai.roles.USER,
-      content: text as string,
-    });
-
-    const response = await openai.chat(SESSION.messages);
-    if (response?.content) {
-      await ctx.reply(response?.content).catch((e: any) => {
-        console.log(`Error while voice message`, e.message);
+      SESSION.messages.push({
+        role: openai.roles.USER,
+        content: text as string,
       });
+
+      const response = await openai.chat(SESSION.messages);
+      if (response?.content) {
+        await ctx.reply(response?.content).catch((e: any) => {
+          console.log(`Error while voice message`, e.message);
+        });
+      }
+    } catch (e: any) {
+      console.log(`Error while voice message`, e.message);
     }
-  } catch (e: any) {
-    console.log(`Error while voice message`, e.message);
+  } else if (ctx.update.message.hasOwnProperty("text")) {
+    try {
+      //@ts-ignore
+      const text = ctx.message.text;
+      SESSION.messages.push({
+        role: openai.roles.USER,
+        content: text as string,
+      });
+
+      await ctx.reply(code(`Запрос обрабатывается...`));
+
+      const response = await openai.chat(SESSION.messages);
+
+      await ctx.reply(response?.content || "Вопрос не понятен");
+    } catch (e) {
+      console.log(`Error while message: `, e);
+    }
   }
 });
 
