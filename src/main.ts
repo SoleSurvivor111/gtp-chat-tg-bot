@@ -6,7 +6,7 @@ import config from "config";
 import { openai } from "./utils/openai.js";
 import { code } from "telegraf/format";
 
-const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
+const bot = new Telegraf(config.get("TELEGRAM_API_TOKEN"));
 
 const INITIAL_SESSION = {
   messages: [],
@@ -74,6 +74,8 @@ bot.on("message", async (ctx) => {
     } catch (e) {
       console.log(`Error while message: `, e);
     }
+  } else {
+    ctx.reply("Данный формат сообщения не поддерживается.");
   }
 });
 
