@@ -1,12 +1,13 @@
 import { session, Telegraf } from "telegraf";
-import { message } from "telegraf/filters";
 import { ogg } from "./utils/ogg.js";
 
-import config from "config";
 import { openai } from "./utils/openai.js";
 import { code } from "telegraf/format";
+import dotenv from "dotenv";
 
-const bot = new Telegraf(config.get("TELEGRAM_API_TOKEN"));
+dotenv.config();
+
+const bot = new Telegraf(process.env.TELEGRAM_API_TOKEN as string);
 
 const INITIAL_SESSION = {
   messages: [],
