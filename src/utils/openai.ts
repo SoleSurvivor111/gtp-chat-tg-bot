@@ -33,7 +33,7 @@ class OpenAI {
 
       return response.data.choices[0].message;
     } catch (e: any) {
-      console.log("Error while send request to chat GRPT: ", e.message);
+      console.log("Error while send request to chat GRPT:  ", e.message);
     }
   }
 
