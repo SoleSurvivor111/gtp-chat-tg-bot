@@ -5,6 +5,9 @@ import {
   OpenAIApi,
 } from "openai";
 import { createReadStream } from "fs";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 class OpenAI {
   openai: OpenAIApi;
