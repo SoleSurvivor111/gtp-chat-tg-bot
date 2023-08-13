@@ -1,11 +1,10 @@
 import { session, Telegraf } from "telegraf";
 import { ogg } from "./ogg.js";
-import config from "config";
 
 import { openai } from "./openai.js";
 import { code } from "telegraf/format";
 
-const bot = new Telegraf(config.get("TELEGRAM_TOKEN"));
+const bot = new Telegraf(process.env["TELEGRAM_TOKEN"]);
 
 const INITIAL_SESSION = {
   messages: [],
